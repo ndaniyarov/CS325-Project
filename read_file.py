@@ -33,13 +33,12 @@ def read_csv():
 
         # print(row[lyrics])
         i += 1
-        if i > 10:
+        if i > 500:
             break
 
     # convert to numpy arrays
     x_lyrics = np.array(all_lyrics)
     y_dates = np.array(all_dates)
     return (x_lyrics, y_dates)
-
 
 # print(x_lyrics)
