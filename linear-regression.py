@@ -25,11 +25,11 @@ x_train = np.array([to_categorical(pad_sequences((sent,), max_words),
                                    vocab_size+1) for sent in sent_ints])
 # define base model
 
-
 def baseline_model():
     # create model
+    # input_dim=len(x_train),
     model = Sequential()
-    model.add(Dense(13, input_dim=len(x_train),
+    model.add(Dense(13,input_dim=len(x_train),
               kernel_initializer='normal', activation='relu'))
     model.add(Dense(1, kernel_initializer='normal'))
     # Compile model
