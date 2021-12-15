@@ -37,6 +37,7 @@ x_train = np.array(vectorized)
 
 def baseline_model():
     # create model
+    # input_dim=len(x_train),
     model = Sequential()
     # model.add(Dense(13, input_dim=len(x_train),
     #         kernel_initializer='normal', activation='relu'))
