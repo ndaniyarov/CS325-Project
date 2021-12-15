@@ -27,9 +27,11 @@ def read_csv():
     all_dates = []
 
     for row in readCSV:
-        if i > 16000 and i < 17000:
+        # if i > 16000 and i < 17000:
+        if i % 30 == 0:
             all_lyrics.append(row[lyrics])
             all_dates.append(int(row[date]))
+            # print(row[date])
 
         # print(row[lyrics])
         i += 1
@@ -41,4 +43,6 @@ def read_csv():
     y_dates = np.array(all_dates)
     return (x_lyrics, y_dates)
 
+
 # print(x_lyrics)
+read_csv()

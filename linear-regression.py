@@ -9,7 +9,6 @@ from sklearn.model_selection import KFold
 from read_file import *
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
-from keras.preprocessing.sequence import pad_sequences
 
 (x_train, y_train) = read_csv()
 
@@ -51,12 +50,15 @@ def baseline_model():
 
 # evaluate model
 estimator = KerasRegressor(build_fn=baseline_model,
-                           epochs=100, batch_size=5, verbose=0)
+                           epochs=80, batch_size=5, verbose=0)
 
 kfold = KFold(n_splits=10)
 history = estimator.fit(x_train, y_train)
 # print(history.history.keys())
+pyplot.style.use('seaborn')
 pyplot.plot(history.history['mae'])
+print(history.history['mae'])
+pyplot.title('Linear Regression: Mean Absolute Error')
 pyplot.xlabel('Epoch')
 pyplot.ylabel('MAE')
 pyplot.savefig('mae.png')
