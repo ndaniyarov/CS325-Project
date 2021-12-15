@@ -1,4 +1,6 @@
 # linear regression
+from matplotlib import pyplot
+from sklearn.metrics import accuracy_score
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasRegressor
@@ -7,12 +9,9 @@ from sklearn.model_selection import KFold
 from read_file import *
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
-from sklearn.preprocessing import OneHotEncoder
 from keras.preprocessing.sequence import pad_sequences
 
 (x_train, y_train) = read_csv()
-# enc = OneHotEncoder()
-# enc.fit(x_train)
 
 max_words = 20
 # one hot vector
@@ -45,16 +44,23 @@ def baseline_model():
               kernel_initializer='normal', activation='relu'))
     model.add(Dense(1, kernel_initializer='normal'))
     # Compile model
-    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.compile(loss='mean_squared_error', optimizer='adam',
+                  metrics=['mse', 'mae'])
     return model
 
 
 # evaluate model
 estimator = KerasRegressor(build_fn=baseline_model,
                            epochs=100, batch_size=5, verbose=0)
-#kfold = KFold(n_splits=10)
+
+kfold = KFold(n_splits=10)
 history = estimator.fit(x_train, y_train)
-# print(history['mean_absolute_error'])
+# print(history.history.keys())
+pyplot.plot(history.history['mae'])
+pyplot.xlabel('Epoch')
+pyplot.ylabel('MAE')
+pyplot.savefig('mae.png')
+# print(len(history.history['mae']))
 # print(x_train.shape)  # (501, 1, 20, 3846)
 # print(y_train.shape)  # (501,)
 # print(x_train)
@@ -75,6 +81,10 @@ history = model.fit(
     verbose=0,
     # Calculate validation results on 20% of the training data.
     validation_split=0.2)
+
+results = cross_val_score(estimator, x_train, y_train, cv=kfold)
+print(results)
+print("Baseline: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+estimator.fit(x_train, y_train)
+prediction = estimator.predict(x_train)
 """
-# results = cross_val_score(estimator, x_train, y_train, cv=kfold)
-# print("Baseline: %.2f (%.2f) MSE" % (results.mean(), results.std()))

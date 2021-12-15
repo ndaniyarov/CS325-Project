@@ -27,14 +27,14 @@ def read_csv():
     all_dates = []
 
     for row in readCSV:
-
-        all_lyrics.append(row[lyrics])
-        all_dates.append(int(row[date]))
+        if i > 16000 and i < 17000:
+            all_lyrics.append(row[lyrics])
+            all_dates.append(int(row[date]))
 
         # print(row[lyrics])
         i += 1
-        if i > 500:
-            break
+        # if i > 50:
+        #   break
 
     # convert to numpy arrays
     x_lyrics = np.array(all_lyrics)
