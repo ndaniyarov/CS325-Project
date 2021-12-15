@@ -21,16 +21,11 @@ word_map = {w: i+1 for (i, w) in enumerate(words)}
 sent_ints = [[word_map[w] for w in sent.split()] for sent in x_train]
 # print(sent_ints)
 vocab_size = len(words)
-print(vocab_size)
 # -changed the below line - the outer for loop sentences to sent_ints
 sequences = pad_sequences(sent_ints)
 vectorized = to_categorical(sequences)
 x_train = np.array(vectorized)
-# x_train = np.array([to_categorical(pad_sequences((sent,), max_words),
-#                                  vocab_size+1) for sent in sent_ints])
 
-# x_train = [to_categorical(pad_sequences((sent,), max_words),
-#       vocab_size+1) for sent in sent_ints]
 # define base model
 
 
@@ -38,10 +33,8 @@ def baseline_model():
     # create model
     # input_dim=len(x_train),
     model = Sequential()
-    #model.add(Embedding(500, 128))
     model.add(LSTM(128, dropout=0.2))
-    # model.add(Dense(13, input_dim=len(x_train),
-    #         kernel_initializer='normal', activation='relu'))
+    model.add(Embedding(500, 128))
     model.add(Dense(13, input_dim=vocab_size+1,
               kernel_initializer='normal', activation='relu'))
 
@@ -54,43 +47,26 @@ def baseline_model():
 
 # evaluate model
 estimator = KerasRegressor(build_fn=baseline_model,
-                           epochs=30, batch_size=5, verbose=0)
+                           epochs=50, batch_size=5, verbose=0)
 
-kfold = KFold(n_splits=10)
 history = estimator.fit(x_train, y_train)
-# print(history.history.keys())
 pyplot.style.use('seaborn')
 pyplot.plot(history.history['mae'])
 print(history.history['mae'])
 pyplot.title('RNN (LSTM): Mean Absolute Error')
 pyplot.xlabel('Epoch')
 pyplot.ylabel('MAE')
-pyplot.savefig('mae-lstm.png')
-# print(len(history.history['mae']))
-# print(x_train.shape)  # (501, 1, 20, 3846)
-# print(y_train.shape)  # (501,)
-# print(x_train)
-# print(y_train)
+pyplot.savefig('mae-rnn-embeddings.png')
+
 """
-x_train = []
-for x in range(0, 501):
-    x_train.append([1, 0])
-x_train = np.array(x_train)
-print(x_train)
+# take 1/5 th of data
+small_x_train = x_train[::5]
+small_y_train = y_train[::5]
 
-model = baseline_model()
-history = model.fit(
-    x_train,
-    y_train,
-    epochs=100,
-    # Suppress logging.
-    verbose=0,
-    # Calculate validation results on 20% of the training data.
-    validation_split=0.2)
+kfold = KFold(n_splits=10)
 
-results = cross_val_score(estimator, x_train, y_train, cv=kfold)
+results = cross_val_score(estimator, small_x_train, small_y_train, cv=kfold)
 print(results)
 print("Baseline: %.2f (%.2f) MSE" % (results.mean(), results.std()))
-estimator.fit(x_train, y_train)
-prediction = estimator.predict(x_train)
 """
+
